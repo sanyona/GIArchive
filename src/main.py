@@ -17,4 +17,4 @@ def scrape_links():
     scraper.scrape_book_links()
 
 if __name__ == "__main__":
-    pass
+    scrape_links()

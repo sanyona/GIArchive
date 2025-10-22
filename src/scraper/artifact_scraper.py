@@ -7,6 +7,7 @@ from src.common.type import Category
 from src.scraper.base import Scraper
 from src.util.file import dump_to_json
 from src.util.logger import get_logger
+from src.util.url import extract_slug
 
 
 class ArtifactScraper(Scraper):
@@ -35,9 +36,7 @@ class ArtifactScraper(Scraper):
             soup = BeautifulSoup(page_html, "html.parser")
 
             # get artifact name from the URL
-            last_part = urlparse(link).path.split("/")[-1]
-            decoded = unquote(last_part)
-            artifact_name = decoded.replace("_", " ")
+            artifact_name = extract_slug(link)
 
             # 1. Find the <h2> with id="Lore"
             lore_heading = soup.find("span", id="Lore")
@@ -46,21 +45,17 @@ class ArtifactScraper(Scraper):
 
             # 2. Find the parent <h2> to locate the section start
             lore_h2 = lore_heading.find_parent("h2")
+ 
 
-            # 3. Collect everything until the next <h2> (artifact piece)
-            section: list[PageElement] = []
-            for sib in lore_h2.find_next_siblings():
-                if sib.name == "h2":  # stop at next h2
-                    break
-                section.append(sib)
-
-            # 4. Parse the elements in between, get h3 + following text
+            # 4. Parse every element before next h2, get h3 + following text
             # h2: lore heading
-            # h3: piece heading
+            # h3: piece name heading
             # div: description <div class="description-wrapper">
             # div: lore/content
             result = {}
-            for elem in section:
+            for elem in lore_h2.find_next_siblings():
+                if elem.name == "h2":  # stop at next h2
+                    break
                 if elem.name != "h3":
                     continue 
 
@@ -68,7 +63,7 @@ class ArtifactScraper(Scraper):
                 title_span = elem.find("span", class_="mw-headline")
                 if not title_span:
                     continue
-                title = title_span.get_text(strip=True)
+                piece = title_span.get_text(strip=True)
 
                 # get all text immediately after this <h3>, ignoring description-wrapper div
                 texts = []
@@ -76,7 +71,8 @@ class ArtifactScraper(Scraper):
                     # stop at next headline
                     if sibling.name == "h3" or sibling.name == "h2":
                         break  
-                        # skip description div
+                    
+                    # skip description div
                     if sibling.name == "div" and "description-wrapper" in sibling.get("class", []):
                         continue
 
@@ -85,7 +81,7 @@ class ArtifactScraper(Scraper):
                     elif sibling.get_text(strip=True):
                         texts.append(sibling.get_text(" ", strip=True))
 
-                result[title] = "\n\n".join(texts)
+                result[piece] = "\n".join(texts)
                 
             all_results[artifact_name] = result
 
