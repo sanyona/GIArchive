@@ -2,11 +2,11 @@ import json
 import urllib.parse
 import pathlib
 from bs4 import BeautifulSoup, Tag
-from src.common.type import Category
+from src.common.type import BookCategory, Category
 from src.common.archives import HTML_DIR, LINKS_DIR
 from src.scraper.base import Scraper
 from src.util.logger import get_logger
-from src.common.links import BASE_LINK, BOOK_COL_ID, OTHER_BOOK_ID, BookCategory, links2html_mapping
+from src.common.links import BASE_LINK, BOOK_COL_ID, OTHER_BOOK_ID, links2html_mapping
 
 CURRENT_DIR = pathlib.Path(__file__).parent.resolve()
 PARENT_DIR = pathlib.Path(__file__).parent.parent.resolve()
@@ -17,6 +17,7 @@ class LinkScraper(Scraper):
     Saves the HTML if sent a page request, else loads from archive files\n
     Saves scraped item links to `links/`
     """
+
     def __init__(self, load_from_file: bool = True) -> None:
         self.load_from_file = load_from_file
         self.logger = get_logger()
@@ -125,32 +126,37 @@ class LinkScraper(Scraper):
 
         # TODO make it a constant
 
-
         heading = main_table.find_previous("span", id=BOOK_COL_ID)
         header_text = heading.get_text(strip=True).lower()
         assert header_text == "List of Book Collections".lower()
 
         # TODO enum or soemthing
-        links[BookCategory.collection.value] = self.select_nth_cells_from_table(table=main_table, index=1)
+        links[BookCategory.collection.value] = self.select_nth_cells_from_table(
+            table=main_table, index=1
+        )
 
-        self.logger.info(f"{len(links[BookCategory.quest.value])} main book links scraped.")
+        self.logger.info(
+            f"{len(links[BookCategory.quest.value])} main book links scraped."
+        )
 
         # 2nd table
         quest_table = tables[1]
- 
+
         heading = quest_table.find_previous("span", id=OTHER_BOOK_ID)
         header_text = heading.get_text(strip=True).lower()
         assert (
             header_text == "Other Books".lower()
         ), f"{header_text} didn't match other books"
 
-        links[BookCategory.quest.value] = (self.select_nth_cells_from_table(table=quest_table, index=1))
+        links[BookCategory.quest.value] = self.select_nth_cells_from_table(
+            table=quest_table, index=1
+        )
 
-        self.logger.info(f"{len(links[BookCategory.quest.value])} quest book links scraped.")
+        self.logger.info(
+            f"{len(links[BookCategory.quest.value])} quest book links scraped."
+        )
 
         with open(LINKS_DIR / f"{Category.BOOK.value}.json", "w") as f:
             json.dump(links, f, indent=4, sort_keys=True)
 
         return links
-
-

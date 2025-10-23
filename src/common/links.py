@@ -1,6 +1,3 @@
-from enum import StrEnum
-
-
 BASE_LINK = "https://genshin-impact.fandom.com"
 
 ARTIFACT = "https://genshin-impact.fandom.com/wiki/Artifact/Sets"
@@ -19,9 +16,3 @@ links2html_mapping = {  # TODO replace with enum
 # for book scraping (section header)
 BOOK_COL_ID = "List_of_Book_Collections"
 OTHER_BOOK_ID = "Other_Books"
-
-class BookCategory(StrEnum):
-    """Enum types for books: book collection, quest/other
-    """
-    collection = "collection"
-    quest = "quest"

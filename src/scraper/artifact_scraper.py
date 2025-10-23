@@ -16,6 +16,7 @@ class ArtifactScraper(Scraper):
 
     :param Scraper: _description_
     """
+
     def __init__(self):
         self.logger = get_logger("ArtifactScraper")
 
@@ -45,7 +46,6 @@ class ArtifactScraper(Scraper):
 
             # 2. Find the parent <h2> to locate the section start
             lore_h2 = lore_heading.find_parent("h2")
- 
 
             # 4. Parse every element before next h2, get h3 + following text
             # h2: lore heading
@@ -57,7 +57,7 @@ class ArtifactScraper(Scraper):
                 if elem.name == "h2":  # stop at next h2
                     break
                 if elem.name != "h3":
-                    continue 
+                    continue
 
                 # get headline text (h3), artifact name
                 title_span = elem.find("span", class_="mw-headline")
@@ -70,10 +70,12 @@ class ArtifactScraper(Scraper):
                 for sibling in elem.find_next_siblings():
                     # stop at next headline
                     if sibling.name == "h3" or sibling.name == "h2":
-                        break  
-                    
+                        break
+
                     # skip description div
-                    if sibling.name == "div" and "description-wrapper" in sibling.get("class", []):
+                    if sibling.name == "div" and "description-wrapper" in sibling.get(
+                        "class", []
+                    ):
                         continue
 
                     if sibling.name == "p":
@@ -82,11 +84,9 @@ class ArtifactScraper(Scraper):
                         texts.append(sibling.get_text(" ", strip=True))
 
                 result[piece] = "\n".join(texts)
-                
+
             all_results[artifact_name] = result
 
-        output_path = JSON_DIR/ f"{Category.ARTIFACT.value}.json"
+        output_path = JSON_DIR / f"{Category.ARTIFACT.value}.json"
         self.logger.info(f"Extracted info from {len(all_results)} links")
         dump_to_json(all_results, output_path)
-
-

@@ -1,5 +1,3 @@
-
-
 from urllib.parse import unquote, urlparse
 
 
@@ -8,7 +6,7 @@ def extract_slug(link: str) -> str:
     Example: https://genshin-impact.fandom.com/wiki/Dreams_of_the_Ancient_Capital\n
     Returns: Dreams of the Ancient Capital
 
-    :param link: url, e.g. 
+    :param link: url, e.g.
     :return: _description_
     """
     last_part = urlparse(link).path.split("/")[-1]
