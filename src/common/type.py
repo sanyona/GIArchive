@@ -1,12 +1,50 @@
 # archive types
+from dataclasses import asdict, dataclass, field
 from enum import Enum, StrEnum
-from dataclasses import dataclass, field
 
 
 class Category(Enum):
     ARTIFACT = "artifact"
     BOOK = "book"
     WEAPON = "weapon"
+
+
+# artifact type
+@dataclass
+class Artifact:
+    """Contain info about a single piece of an artifact"""
+
+    name: str
+    description: str
+    text: str
+
+    def __str__(self) -> str:
+        """User-friendly string for printing/logging."""
+        return (
+            f"Artifact: {self.name}\n"
+            f"  Description: {self.description}\n"
+            f"  Text:\n{self.text}"
+        )
+
+
+@dataclass
+class ArtifactSet:
+    name: str
+    artifacts: list[Artifact]
+
+    def __str__(self) -> str:
+        """User-friendly string for printing/logging."""
+        header = f"Artifact Set: {self.name} ({len(self.artifacts)} items)"
+        body = "\n".join(
+            f"{idx+1}. {str(artifact)}" for idx, artifact in enumerate(self.artifacts)
+        )
+        return f"{header}\n{'-' * len(header)}\n{body}"
+
+    def to_dict(self):
+        return asdict(self)
+
+
+# book types
 
 
 @dataclass

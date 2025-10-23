@@ -3,7 +3,7 @@ from src.scraper.link_scraper import LinkScraper
 
 
 def scrape_artifact():
-    artifact_scraper = ArtifactScraper()
+    artifact_scraper = ArtifactScraper(verbose=True)
     artifact_scraper.run()
 
 
@@ -15,4 +15,4 @@ def scrape_links():
 
 
 if __name__ == "__main__":
-    scrape_links()
+    scrape_artifact()

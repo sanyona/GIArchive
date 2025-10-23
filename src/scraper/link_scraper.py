@@ -1,12 +1,15 @@
 import json
-import urllib.parse
 import pathlib
+import urllib.parse
+
 from bs4 import BeautifulSoup, Tag
-from src.common.book_type import BookCategory, Category
+
 from src.common.archives import HTML_DIR, LINKS_DIR
+from src.common.links import (BASE_LINK, BOOK_COL_ID, OTHER_BOOK_ID,
+                              links2html_mapping)
+from src.common.type import BookCategory, Category
 from src.scraper.base import Scraper
 from src.util.logger import get_logger
-from src.common.links import BASE_LINK, BOOK_COL_ID, OTHER_BOOK_ID, links2html_mapping
 
 CURRENT_DIR = pathlib.Path(__file__).parent.resolve()
 PARENT_DIR = pathlib.Path(__file__).parent.parent.resolve()
@@ -44,7 +47,7 @@ class LinkScraper(Scraper):
         rows = table.select("tr")[1:]
         for row in rows:
             cells = row.select("td")
-            link = cells[index].find("a")["href"]
+            link: str = cells[index].find("a")["href"]
             links.append(urllib.parse.urljoin(BASE_LINK, link))
         return links
 
