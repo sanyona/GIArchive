@@ -3,8 +3,8 @@ from urllib.parse import unquote, urlparse
 
 from bs4 import BeautifulSoup, PageElement
 from src.common.archives import JSON_DIR, LINKS_DIR
-from src.common.type import BookArchive, BookCategory
-from src.common.type import BookCollection, Category, QuestBook, Volume
+from src.common.book_type import BookArchive, BookCategory
+from src.common.book_type import BookCollection, Category, QuestBook, Volume
 from src.scraper.base import Scraper
 from src.util.file import dump_to_json
 from src.util.logger import get_logger

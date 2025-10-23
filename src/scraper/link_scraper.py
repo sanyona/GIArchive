@@ -2,7 +2,7 @@ import json
 import urllib.parse
 import pathlib
 from bs4 import BeautifulSoup, Tag
-from src.common.type import BookCategory, Category
+from src.common.book_type import BookCategory, Category
 from src.common.archives import HTML_DIR, LINKS_DIR
 from src.scraper.base import Scraper
 from src.util.logger import get_logger
