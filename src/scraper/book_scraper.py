@@ -100,7 +100,7 @@ class BookScraper(Scraper):
                                     )
                             elif elem.name == "p":
                                 texts.append(elem.get_text(separator=" ", strip=True))
-                        print(description, texts)
+
                         volume = Volume(description=description, text="\n".join(texts))
                         volumes.append(volume)
                 # regular books
@@ -204,7 +204,6 @@ class BookScraper(Scraper):
                 res = self._scrape_collection(links)
                 book_archive.book_collections = res
             elif category == BookCategory.quest.value:
-                # continue
                 res = self._scrape_quest(links)
                 book_archive.quest_books = res
 
