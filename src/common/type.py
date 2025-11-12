@@ -82,8 +82,11 @@ class BookCategory(StrEnum):
 
 @dataclass
 class BookArchive:
-    book_collections: list[BookCollection] = field(default_factory=list)
-    quest_books: list[QuestBook] = field(default_factory=list)
+    book_collections: dict[str, BookCollection] = field(default_factory=dict)
+    quest_books: dict[str, QuestBook] = field(default_factory=dict)
 
     def count(self):
         return len(self.book_collections) + len(self.quest_books)
+
+    def to_dict(self):
+        return asdict(self)
